@@ -1,6 +1,6 @@
 {
   "name": "find-changelog",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Find the changelog of a package",
   "type": "module",
   "keywords": [],
