@@ -14,16 +14,16 @@ const args = parseArgs({
 const pkg = args.positionals.at(0)
 
 if (!pkg) {
-  console.error('Please provide a package name')
-  process.exit(1)
+    console.error('Please provide a package name')
+    process.exit(1)
 }
 
 // get package info
 const packument = await getPackument(pkg)
 const gitInfo = hostedGitInfo.fromUrl(
     typeof packument.repository === 'string'
-    ? packument.repository
-    : packument.repository?.url
+        ? packument.repository
+        : packument.repository?.url
 )
 
 if (!gitInfo) {
@@ -65,14 +65,15 @@ const changelogUrl = changelog?.html_url
 
 if (changelogUrl) {
     console.log(terminalLink('changelog', changelogUrl))
-} else {
-    const { data: releases } = await octokit.request('GET /repos/{owner}/{repo}/releases', {
-        owner: gitInfo.user,
-        repo: gitInfo.project,
-    })
-    if (releases.length < 1) {
-        console.error('No releases found')
-        process.exit(1)
-    }
-    console.log(terminalLink('releases', `https://github.com/${gitInfo.user}/${gitInfo.project}/releases`))
 }
+
+const { data: releases } = await octokit.request('GET /repos/{owner}/{repo}/releases', {
+    owner: gitInfo.user,
+    repo: gitInfo.project,
+})
+if (releases.length < 1) {
+    console.error('No releases found')
+    process.exit(1)
+}
+console.log(terminalLink('releases', `https://github.com/${gitInfo.user}/${gitInfo.project}/releases`))
+
