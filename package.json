@@ -1,0 +1,22 @@
+{
+  "name": "find-changelog",
+  "version": "1.0.0",
+  "description": "Find the changelog of a package",
+  "type": "module",
+  "keywords": [],
+  "author": "AkaraChen",
+  "license": "ISC",
+  "dependencies": {
+    "hosted-git-info": "^8.0.0",
+    "octokit": "^4.0.2",
+    "open": "^10.1.0",
+    "query-registry": "^3.0.1",
+    "terminal-link": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.9"
+  },
+  "bin": {
+    "find-changelog": "./index.js"
+  }
+}
