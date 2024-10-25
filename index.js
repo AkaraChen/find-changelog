@@ -1,7 +1,7 @@
-import { parseArgs } from 'node:util'
-import { getPackument } from 'query-registry'
-import { createRequire } from 'node:module'
+import { createRequire } from 'node:module';
+import { parseArgs } from 'node:util';
 import { Octokit } from "octokit";
+import { getPackageManifest } from 'query-registry';
 import terminalLink from 'terminal-link';
 
 const require = createRequire(import.meta.url)
@@ -19,7 +19,10 @@ if (!pkg) {
 }
 
 // get package info
-const packument = await getPackument(pkg)
+const packument = await getPackageManifest(pkg).catch(err => {
+    console.error('cannot get package info', err)
+    process.exit(1)
+})
 const gitInfo = hostedGitInfo.fromUrl(
     typeof packument.repository === 'string'
         ? packument.repository
@@ -42,12 +45,17 @@ if (!gitInfo.type === 'github') {
     process.exit(1)
 }
 
+console.log(terminalLink('repository', gitInfo.browse()))
+
 const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN,
 })
 const { data: files } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
     owner: gitInfo.user,
     repo: gitInfo.project,
+}).catch(err => {
+    console.error('cannot get repository contents', err)
+    process.exit(1)
 })
 
 const names = [
@@ -71,9 +79,6 @@ const { data: releases } = await octokit.request('GET /repos/{owner}/{repo}/rele
     owner: gitInfo.user,
     repo: gitInfo.project,
 })
-if (releases.length < 1) {
-    console.error('No releases found')
-    process.exit(1)
+if (releases.length > 0) {
+    console.log(terminalLink('releases', `https://github.com/${gitInfo.user}/${gitInfo.project}/releases`))
 }
-console.log(terminalLink('releases', `https://github.com/${gitInfo.user}/${gitInfo.project}/releases`))
-
