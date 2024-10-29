@@ -18,6 +18,8 @@ if (!pkg) {
     process.exit(1)
 }
 
+console.log(terminalLink('npm', new URL(pkg, 'https://www.npmjs.com/package/').href))
+
 // get package info
 const packument = await getPackageManifest(pkg).catch(err => {
     console.error('cannot get package info', err)
